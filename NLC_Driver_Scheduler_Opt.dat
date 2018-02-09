@@ -1,0 +1,53 @@
+/*********************************************
+ * OPL 12.6.0.0 Data
+ * Author: mike.barough
+ * Creation Date: Apr 01, 2016 at 11:10:17 AM
+ *********************************************/
+
+sqlQueryString1 = "SELECT RouteNum, TeamNum, Carrier, From_Loc, To_Loc, DoW_DISPATCH, ToD_DISPATCH, DoW_ARRIVAL, ToD_ARRIVAL, DoW_RELEASE, ToD_RELEASE, MILES, Status, TeamNumOldOrg, CarrierOldOrg, Fixed FROM Team_Scheduler_R3_Mod ORDER BY RouteNum" ;
+DBConnection db("oledb","CubePlanApp/GoodHeath12/PDOpsSand/wpil0214esqlb04\\wpil0214esqlb04");
+Route from DBRead(db, sqlQueryString1); 
+
+MaxTeam = 20;
+MinMiles = 4500;
+MaxMiles = 5500;
+DOT_Const = 2040;
+DualGap = 0.005;
+
+p1 = 9000.0;
+p2 = 0.0;
+p3 = 2.0;
+p4 = 0.0;
+p5 = 0.0;
+
+AllowedRouteTeamChanges = 30;
+AllowedTeamChanges = 15;
+
+OW_1 = 1;
+OW_2 = 0;
+OW_3 = 1;
+SolutionPoolCapacity = 5;
+
+/***************************************************************************
+* Short Summary for Teams such as number of teams, legs, milages and etc.  *
+***************************************************************************/
+DBExecute(db,"DROP TABLE Team_Driver_Scheduler_Heu");
+DBExecute(db,"CREATE TABLE Team_Driver_Scheduler_Heu(Option_Number int, Obj_Value float, Milage_Slack float, Milage_Surplus float, Delta float, TeamChanges float, Teams float, Team int, Leg int, Route int, RouteDoT varchar(20))");
+Team_Leg_Sorted to DBUpdate(db,"INSERT INTO Team_Driver_Scheduler_Heu(Option_Number, Obj_Value, Milage_Slack, Milage_Surplus, Delta, TeamChanges, Teams, Team, Leg, Route, RouteDoT) VALUES(?,?,?,?,?,?,?,?,?,?,?)");
+
+/****************************************************************************
+* Segrigates Legs based on their start and end time and if they are 		*
+* DoT Dummies or actual legs and their respective teams						*
+****************************************************************************/
+DBExecute(db,"DROP TABLE Team_Driver_Scheduler_Assi");
+DBExecute(db,"CREATE TABLE Team_Driver_Scheduler_Assi(Option_Number int, Team int, Leg int, Route int, LegStart int, LegEnd int, Miles float, Type varchar(20))");
+Team_Leg_Assign to DBUpdate(db,"INSERT INTO Team_Driver_Scheduler_Assi(Option_Number, Team, Leg, Route, LegStart, LegEnd, Miles, Type) VALUES(?,?,?,?,?,?,?,?)");
+
+/****************************************************************************
+* Detail data for building a Gantt Chart and schedule reporting table       *
+****************************************************************************/
+DBExecute(db,"DROP TABLE Team_Driver_Scheduler_Gantt");
+DBExecute(db,"CREATE TABLE Team_Driver_Scheduler_Gantt(option_number int, obj_value float, obj_team_route_changes float, obj_team_changes float, obj_total_teams float, obj_slack float, obj_surplus float, CpuTime float, Team_Att_Num int, Team_Att_Carr varchar(20), team int, leg int, route int, arc_id int, arc_route int, arc_mile float, loc_from varchar(20), loc_to varchar(20), activity varchar(20), dispatch_DoW varchar(20), dispatch_ToD int, dispatch_ToW int, arrival_DoW varchar(20), arrival_ToD int, arrival_ToW int, release_DoW varchar(20), release_ToD int, release_ToW int, TeamNumOldOrg float, CarrierOldOrg varchar(20), ChangeFlag int)");
+Gantt_Solution_Sorted to DBUpdate(db,"INSERT INTO Team_Driver_Scheduler_Gantt(option_number, obj_value, obj_team_route_changes, obj_team_changes, obj_total_teams, obj_slack, obj_surplus, CpuTime, Team_Att_Num, Team_Att_Carr, Team, Leg, Route, arc_id, arc_route, arc_mile, loc_from, loc_to, activity, dispatch_DoW, dispatch_ToD, dispatch_ToW, arrival_DoW, arrival_ToD, arrival_ToW, release_DoW, release_ToD, release_ToW, TeamNumOldOrg, CarrierOldOrg, ChangeFlag) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+
+
