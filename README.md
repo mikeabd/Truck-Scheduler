@@ -1,9 +1,10 @@
 # Truck-Scheduler
 
-This code has been developed to schedule Long Haul trucks of a leading pharmaceutical distritbution comapny, Cardinal Health Inc (Fortune 20). This code alont with a fully integrated UI went on production early 2016 and it is scheduling all the weekly trucks (140+ routes) and 7 days of the week at CAH to date.
-Optimization constraints and parameters are explained in details within the body of the .mod model. The production code is slightly different as it is interacting with the UI with reading and writing parameters and solutions on a DB constantly.
+This code has been developed to schedule Long Haul trucks of a leading pharmaceutical distritbution comapny, Cardinal Health Inc (Fortune 20). This code along with a fully integrated UI went on production in early 2016 and it is scheduling all the weekly trucks (140+ routes) and 7 days of the week at Cardinal Health National Logstics Center (NLC) to date.
 
-Some of the important features of this solution are:
+The optimization model's constraints and parameters are explained in details within the body of the .mod file. The production code is slightly different version of this as it is interacting with the UI with reading and writing parameters and solutions on a DB and interacting with a Tableau Server constantly.
+
+Some of the important features of this solution are as follow:
 - Built out of scratch from problem formulation to the market research for existing software and tools to actual development and UI integration
 - One of the only tools available in market that can take Department of Transportation constraints, existing Route configuration for each driver, acounts for Multi-Stop vs Single-Stop routes and provides optimal as well as sub-optimal solutions for easiness of execution (sometimes, decision makers are willing to sacrify optimality, most cheapest solution, to a slightly less optimal solution for easiness of route execution)
 - The UI is fully integrated with a routing DB which is Geo coded and developed as a side project of this
